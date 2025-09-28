@@ -1,0 +1,27 @@
+{
+  "name": "3-tier-architecture",
+  "version": "1.0.0",
+  "description": "A web application showcasing the Asia Cup 2025 cricket tournament with match details, standings, and player statistics.",
+  "main": "data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kavi-git-mathi/MS-Azure-3-Tier-Project-Cloud-Engineer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kavi-git-mathi/MS-Azure-3-Tier-Project-Cloud-Engineer/issues"
+  },
+  "homepage": "https://github.com/kavi-git-mathi/MS-Azure-3-Tier-Project-Cloud-Engineer#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mssql": "^11.0.1"
+  }
+}
