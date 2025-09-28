@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asia Cup 2025</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Asia Cup</h1>
+    <nav>
+      <a href="#matches" class="nav-link active">MATCHES</a>
+      <a href="#standings" class="nav-link">STANDINGS</a>
+      <a href="#stats" class="nav-link">STATS</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="year-selector">
+      <span>2025 ▼</span>
+    </div>
+    
+    <section id="matches">
+      <h2>MATCHES</h2>
+      <div id="matches-container">
+        <!-- Matches will be loaded here -->
+      </div>
+    </section>
+
+    <section id="standings">
+      <h2>STANDINGS</h2>
+      <div class="stage-selector">
+        <button class="stage-btn active" data-stage="group">Group Stage</button>
+        <button class="stage-btn" data-stage="super4">Super 4</button>
+      </div>
+      <div id="standings-container">
+        <!-- Standings will be loaded here -->
+      </div>
+    </section>
+
+    <section id="stats">
+      <h2>STATS</h2>
+      <div class="stats-tabs">
+        <button class="stat-tab active" data-stat="runs">Runs</button>
+        <button class="stat-tab" data-stat="wickets">Wickets</button>
+      </div>
+      <div id="stats-container">
+        <!-- Stats will be loaded here -->
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
