@@ -1,56 +1,61 @@
-const express = require('express');
-const path = require('path');
-const sql = require('mssql');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const sql = require("mssql");
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+app.use(cors());
+app.use(express.json());
 
-// Serve frontend files
-app.use(express.static(path.join(__dirname)));
-
-// Azure SQL config
+// Azure SQL configuration
 const dbConfig = {
-  server: process.env.DB_SERVER, // e.g., 'three-tier-db-server.database.windows.net'
-  database: process.env.DB_NAME, // e.g., 'three-tier-db'
-  user: process.env.DB_USER,     // SQL admin username
-  password: process.env.DB_PASSWORD, // SQL admin password
-  encrypt: true,
-  trustServerCertificate: false,
+  user: process.env.DB_USER || "dbadmin",
+  password: process.env.DB_PASS || "Jaihind@12345",
+  server: process.env.DB_SERVER || "three-tier-db-server.database.windows.net",
+  database: process.env.DB_NAME || "three-tier-db",
   options: {
-    enableArithAbort: true
+    encrypt: true,
+    trustServerCertificate: false
   }
 };
 
-// API endpoint to fetch all data dynamically
-app.get('/api/data', async (req, res) => {
+// API: Matches
+app.get("/api/matches", async (req, res) => {
   try {
     let pool = await sql.connect(dbConfig);
-
-    const resultGroupMatches = await pool.request().query('SELECT * FROM GroupMatches');
-    const resultSuper4Matches = await pool.request().query('SELECT * FROM Super4Matches');
-    const resultFinalMatch = await pool.request().query('SELECT TOP 1 * FROM FinalMatch');
-    const resultGroupStandings = await pool.request().query('SELECT * FROM GroupStandings');
-    const resultSuper4Standings = await pool.request().query('SELECT * FROM Super4Standings');
-    const resultTopBatsmen = await pool.request().query('SELECT * FROM TopBatsmen');
-    const resultTopBowlers = await pool.request().query('SELECT * FROM TopBowlers');
-
-    res.json({
-      groupMatches: resultGroupMatches.recordset,
-      super4Matches: resultSuper4Matches.recordset,
-      finalMatch: resultFinalMatch.recordset[0],
-      groupStandings: resultGroupStandings.recordset,
-      super4Standings: resultSuper4Standings.recordset,
-      topBatsmen: resultTopBatsmen.recordset,
-      topBowlers: resultTopBowlers.recordset
-    });
-
+    let result = await pool.request().query("SELECT * FROM Matches");
+    res.json(result.recordset);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Database error');
+    console.error("Error fetching Matches:", err);
+    res.status(500).send("Database error");
+  }
+});
+
+// API: Standings
+app.get("/api/standings", async (req, res) => {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool.request().query("SELECT * FROM Standings");
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Error fetching Standings:", err);
+    res.status(500).send("Database error");
+  }
+});
+
+// API: Stats
+app.get("/api/stats", async (req, res) => {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool.request().query("SELECT * FROM Stats");
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Error fetching Stats:", err);
+    res.status(500).send("Database error");
   }
 });
 
 // Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`API server running on port ${PORT}`);
 });
