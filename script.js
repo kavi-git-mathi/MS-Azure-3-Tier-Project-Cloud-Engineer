@@ -1,5 +1,5 @@
 // Replace with your actual backend URL
-const API_URL = "https://complete-project-app.azurewebsites.net/api";
+const API_URL = "https://complete-project-app-hvaqecdwexhmazdy.canadacentral-01.azurewebsites.net/api";
 
 // Test the connection first
 async function testConnection() {
