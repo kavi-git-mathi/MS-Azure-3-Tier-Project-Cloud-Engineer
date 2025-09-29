@@ -1,6 +1,7 @@
 async function loadData() {
   try {
-    const res = await fetch('/api/data');
+    const res = await fetch('https://complete-project-app.azurewebsites.net/api/data');
+
     const data = await res.json();
 
     window.groupMatches = data.groupMatches;
