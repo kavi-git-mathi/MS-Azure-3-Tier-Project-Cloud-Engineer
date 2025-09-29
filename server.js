@@ -1,69 +1,87 @@
-const express = require("express");
-const cors = require("cors");
-const sql = require("mssql");
+const express = require('express');
+const sql = require('mssql');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
-app.use(cors({
-  origin: "*"   // allow all origins for testing
-}));
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Azure SQL configuration
+// Database configuration - using environment variables
 const dbConfig = {
-  user: process.env.DB_USER || "dbadmin",
-  password: process.env.DB_PASS || "Jaihind@12345",
-  server: process.env.DB_SERVER || "three-tier-db-server.database.windows.net",
-  database: process.env.DB_NAME || "three-tier-db",
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_NAME,
   options: {
     encrypt: true,
     trustServerCertificate: false
   }
 };
 
-// API: Matches
-app.get("/api/matches", async (req, res) => {
+// Database connection pool
+let pool;
+
+async function connectToDatabase() {
   try {
-    let pool = await sql.connect(dbConfig);
-    let result = await pool.request().query("SELECT * FROM Matches");
+    pool = await sql.connect(dbConfig);
+    console.log('✅ Connected to Azure SQL Database');
+    return pool;
+  } catch (err) {
+    console.error('❌ Database connection failed:', err);
+    throw err;
+  }
+}
+
+// Initialize database connection
+connectToDatabase();
+
+// API Routes
+app.get('/api/group-matches', async (req, res) => {
+  try {
+    const result = await pool.request().query('SELECT * FROM GroupMatches ORDER BY MatchDate');
     res.json(result.recordset);
   } catch (err) {
-    console.error("Error fetching Matches:", err);
-    res.status(500).send("Database error");
+    console.error('Error fetching group matches:', err);
+    res.status(500).json({ error: 'Failed to fetch group matches' });
   }
 });
 
-// API: Standings
-app.get("/api/standings", async (req, res) => {
+app.get('/api/standings', async (req, res) => {
   try {
-    let pool = await sql.connect(dbConfig);
-    let result = await pool.request().query("SELECT * FROM Standings");
+    const result = await pool.request().query('SELECT * FROM Standings ORDER BY Points DESC, GoalDifference DESC');
     res.json(result.recordset);
   } catch (err) {
-    console.error("Error fetching Standings:", err);
-    res.status(500).send("Database error");
+    console.error('Error fetching standings:', err);
+    res.status(500).json({ error: 'Failed to fetch standings' });
   }
 });
 
-// API: Stats
-app.get("/api/stats", async (req, res) => {
+app.get('/api/player-stats', async (req, res) => {
   try {
-    let pool = await sql.connect(dbConfig);
-    let result = await pool.request().query("SELECT * FROM Stats");
+    const result = await pool.request().query('SELECT * FROM PlayerStats ORDER BY Goals DESC, Assists DESC');
     res.json(result.recordset);
   } catch (err) {
-    console.error("Error fetching Stats:", err);
-    res.status(500).send("Database error");
+    console.error('Error fetching player stats:', err);
+    res.status(500).json({ error: 'Failed to fetch player stats' });
+  }
+});
+
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.request().query('SELECT 1');
+    res.json({ status: 'OK', database: 'Connected' });
+  } catch (err) {
+    res.status(500).json({ status: 'Error', database: 'Disconnected' });
   }
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`API endpoints available at http://localhost:${PORT}/api/`);
 });
-
-const API_URL = "https://complete-project-app.azurewebsites.net/api";
-fetch(`${API_URL}/data`)
-  .then(res => res.json())
-  .then(data => console.log(data));
-
