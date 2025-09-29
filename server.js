@@ -3,7 +3,9 @@ const cors = require("cors");
 const sql = require("mssql");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*"   // allow all origins for testing
+}));
 app.use(express.json());
 
 // Azure SQL configuration
@@ -59,3 +61,9 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });
+
+const API_URL = "https://complete-project-app.azurewebsites.net/api";
+fetch(`${API_URL}/data`)
+  .then(res => res.json())
+  .then(data => console.log(data));
+
