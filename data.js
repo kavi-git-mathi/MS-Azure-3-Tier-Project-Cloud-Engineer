@@ -65,3 +65,13 @@ const topBowlers = [
   { name: "Wanindu Hasaranga", country: "Sri Lanka", matches: 6, economy: 7.10, wickets: 8 },
   { name: "Mohammad Nabi", country: "Afghanistan", matches: 5, economy: 6.90, wickets: 7 }
 ];
+
+module.exports = {
+  groupMatches,
+  super4Matches,
+  finalMatch,
+  groupStandings,
+  super4Standings,
+  topBatsmen,
+  topBowlers
+};
